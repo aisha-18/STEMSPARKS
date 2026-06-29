@@ -50,7 +50,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 25px 8%;
-            background-color: #f4d5dc; /* <--- Updated to baby pink */
+            background-color: #f4d5dc; /* Baby pink */
             position: relative;
             z-index: 100;
         }
@@ -119,7 +119,7 @@
             transition: all 0.3s ease;
         }
 
-        .btn-nav-contact::after { display: none; } /* Disable underline for button */
+        .btn-nav-contact::after { display: none; } 
 
         .btn-nav-contact:hover {
             background-color: var(--text-dark);
@@ -614,11 +614,53 @@
         .books-container {
             background-color: var(--white);
             color: var(--text-dark);
-            padding: 90px 8%;
+            padding: 60px 8% 90px 8%;
             text-align: center;
         }
 
-        /* --- CHAPTERS VIEW SECTIONS --- ++++ */
+        /* Grid layout for displaying both portrait preview items elegantly side-by-side */
+        .books-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(280px, 440px));
+            gap: 40px;
+            justify-content: center;
+            align-items: start;
+            margin-top: 40px;
+            width: 100%;
+        }
+
+        .book-preview-wrapper {
+            display: block;
+            width: 100%;
+            text-decoration: none;
+            outline: none;
+            position: relative;
+        }
+
+        .book-preview-viewport {
+            width: 100%;
+            aspect-ratio: 3 / 4.2;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-lift);
+            background-color: #f1f3f4;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .book-preview-wrapper:hover .book-preview-viewport {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.14);
+        }
+
+        .book-preview-viewport iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            pointer-events: none; /* Capture custom user tap events for structural anchor link redirect execution */
+        }
+
+        /* --- CHAPTERS VIEW SECTIONS --- */
         .chapters-hero {
             display: flex;
             justify-content: center;
@@ -800,6 +842,7 @@
             .benefits-list li { justify-content: center; text-align: left; }
             .feature-right { width: 100%; }
             .footer-links { flex-direction: column; gap: 20px; }
+            .books-preview-grid { grid-template-columns: 1fr; max-width: 440px; }
         }
 
         @media (max-width: 480px) {
@@ -967,7 +1010,22 @@
 
             <section class="books-container">
                 <h2 class="serif-title" style="margin-bottom: 20px;">Curriculum & Activity Guides</h2>
-                <p style="color: var(--gray-sub); font-size: 1.1rem;">Your book display layout assets can be integrated right here.</p>
+                
+                <div class="books-preview-grid">
+                    
+                    <a href="https://drive.google.com/file/d/17EiH6GePNnu0qrNb_0XHmwRu4y3liHjs/view?usp=sharing" target="_blank" class="book-preview-wrapper">
+                        <div class="book-preview-viewport">
+                            <iframe src="https://drive.google.com/file/d/17EiH6GePNnu0qrNb_0XHmwRu4y3liHjs/preview" allow="autoplay"></iframe>
+                        </div>
+                    </a>
+
+                    <a href="https://drive.google.com/file/d/1Yqcy35S-ave3abtaOGWyineZdOr0jOI5/view?usp=sharing" target="_blank" class="book-preview-wrapper">
+                        <div class="book-preview-viewport">
+                            <iframe src="https://drive.google.com/file/d/1Yqcy35S-ave3abtaOGWyineZdOr0jOI5/preview" allow="autoplay"></iframe>
+                        </div>
+                    </a>
+
+                </div>
             </section>
         </div>
 
@@ -1027,7 +1085,7 @@
                 <span>@your_tiktok</span>
             </a>
 
-            <a href="mailto:contact@Spark2STEM.org" class="footer-link">
+            <a id="contact" href="mailto:Spark2STEMfoundation@gmail.com" class="footer-link">
                 <svg viewBox="0 0 24 24">
                     <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                 </svg>
@@ -1043,7 +1101,16 @@
             });
             
             const targetView = document.getElementById(viewId);
-            targetView.classList.add('active-view');
+            if (targetView) {
+                targetView.classList.add('active-view');
+            }
+            
+            document.querySelectorAll('.tab-pill').forEach(pill => {
+                pill.classList.remove('active');
+                if (pill.getAttribute('onclick') && pill.getAttribute('onclick').includes(viewId)) {
+                    pill.classList.add('active');
+                }
+            });
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1055,7 +1122,8 @@
             
             document.querySelectorAll('.accordion-item').forEach(i => {
                 i.classList.remove('open');
-                i.querySelector('.accordion-panel').style.maxHeight = null;
+                const p = i.querySelector('.accordion-panel');
+                if(p) p.style.maxHeight = null;
             });
             
             if (!isOpen) {
